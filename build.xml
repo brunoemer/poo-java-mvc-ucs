@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<project name="Trabalho2" default="run" basedir=".">
+
+
+	<!-- Definição das propriedades -->
+
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="classes" />
+	<property name="dist.dir" value="dist" />
+	<property name="docs.dir" value="docs" />
+	<property name="lib.dir" value="lib" />
+   <property name="main.class" value="view.Inicio" />
+
+	<!-- Definição do classpath da aplicação -->
+
+	<path id="classpath.base">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.dir}/jfreechart">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Inicialização do build : cração de diretórios necessários -->
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${docs.dir}" />
+		<mkdir dir="${lib.dir}" />
+	</target>
+
+	<!-- Limpeza do projeto : Exclui todos os artefatos que são gerados -->
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${docs.dir}" />
+	</target>
+
+	<!-- Compila as classes da aplicação -->
+
+	<target name="compile" depends="init" description="Compila os arquivos-fonte">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath.base" />
+		</javac>
+	</target>
+
+	<!-- Empacota a aplicação em um arquivo JAR-->
+
+	<target name="jar" depends="compile">
+		<jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}" />
+	</target>
+
+	<!-- Executa a aplicação -->
+
+	<target name="run" depends="jar">
+		<java classname="${main.class}" fork="true">
+			<classpath>
+				<pathelement location="${dist.dir}/${ant.project.name}.jar" />
+			</classpath>
+			<classpath refid="classpath.base" />
+		</java>
+	</target>
+
+	<!-- Gera a documentação da aplicação -->
+
+	<target name="javadoc" depends="init">
+		<javadoc destdir="${docs.dir}" author="true" version="true" use="true" windowtitle="Campeonato">
+			<packageset dir="${src.dir}" />
+		</javadoc>
+	</target>
+
+
+</project>
